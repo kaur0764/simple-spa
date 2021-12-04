@@ -16,15 +16,13 @@ html {
 }
 body {
   min-height: 100vh;
-  background-color: hsl(20, 30%, 90%);
+  background-color: #beb6ce;
 }
 
-/*******************
-  header and search
-*******************/
+/*******************header and search*******************/
 
 header {
-  background-color: hsl(20, 40%, 40%);
+  background-color: #3F2C59;
   color: hsl(20, 40%, 100%);
   display: flex;
   flex-direction: column;
@@ -32,14 +30,14 @@ header {
   align-items: center;
   min-height: 15vh;
   font-size: 1rem;
-  border-bottom: 0.5rem solid hsl(20, 10%, 30%);
+  border-bottom: 0.5rem solid #2A1F40;
 }
 header h1,
 header form {
   padding: 1rem;
 }
 header h1 {
-  text-shadow: 2px 2px 2px hsl(20, 10%, 30%);
+  text-shadow: 2px 2px 2px #2A1F40;
 }
 header form {
   display: flex;
@@ -47,22 +45,24 @@ header form {
   align-items: center;
   margin-right: 1rem;
 }
+
 #search {
   font-size: 1rem;
   line-height: 1;
-  padding: 0.25rem 1rem;
+  padding: 0.25rem 0.5rem;
   font-family: Raleway, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-weight: 300;
   min-width: 30ch;
+  border-radius: 8px;
 }
 #btnSearch .iconic {
   height: 22px;
   width: 22px;
 }
 #btnSearch .iconic * {
-  stroke: hsl(20, 10%, 60%);
-  fill: hsl(20, 10%, 30%);
+  stroke: #906fbf;
+  fill: #2A1F40;
 }
 #btnSearch.pulse {
   animation-name: pulse;
@@ -80,11 +80,10 @@ header form {
   background-color: white;
 }
 
-/*******************
-  content area
-*******************/
+/*******************content area*******************/
 
 #instructions {
+  padding: 1rem;
   display: none;
 }
 #actors {
@@ -98,24 +97,59 @@ header form {
 #media.active {
   display: block;
 }
+
 #instructions h2,
 #actors h2,
 #media h2 {
   font-weight: 500;
   font-size: 3rem;
-  color: hsl(20, 10%, 30%);
+  color: #513873;
   padding: 1rem;
+}
+
+#actors h2::before,
+#media h2::before{
+  content: '\2962';
+  color: rgba(255, 255, 255, 0.695); 
+  position: relative;
+  font-size: 3rem;
+  padding-right: 0.5rem;
+}
+
+#actors .content,
+#media .content{
+  display: grid;
+  padding: 1rem 2rem;
+  gap: 1rem;
+}
+
+#actors .content .actor{
+  text-align: center;
 }
 
 .content p {
   padding: 0 1rem;
   margin: 1rem 0;
-  color: hsl(20, 10%, 50%);
+  color: #69468C;
 }
 
-/***********************
-  Effects
-***********************/
+.content div{
+  padding-top: 0.5rem;
+  text-align: center;
+  border-radius: 10px;
+  background-image: linear-gradient(to bottom,transparent,rgba(255, 255, 255, 0.695));
+}
+
+svg{
+  width:8rem;
+}
+
+.source{
+  padding: 0 1rem;
+  margin: 1rem 0; 
+  color: #69468C;
+}
+/***********************Effects***********************/
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -131,9 +165,7 @@ header form {
   }
 }
 
-/************************
-  Media Queries
-************************/
+/************************Media Queries************************/
 @media all and (min-width: 800px) {
   header {
     font-size: 1.2rem;
@@ -146,18 +178,39 @@ header form {
   #media.active {
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content:flex-start;
     align-items: flex-start;
   }
-
-  #instructions h2,
+  
+  #instructions h2{
+    font-size: 7rem;
+  }
+  
   #actors h2,
   #media h2 {
-    /* for the wider screens */
-    font-size: 12rem;
-    color: hsla(20, 10%, 30%, 0.32);
+    font-size: 7rem;
     position: relative;
-    writing-mode: vertical-lr;
+    writing-mode: vertical-lr; 
+  }
+  
+
+  #actors h2::before,
+  #media h2::before{
+  content: '\2965';
+  color: rgba(255, 255, 255, 0.695); 
+  position: relative;
+  font-size: 5rem;
+  padding-right: 1rem;
+}
+
+
+  #actors .content{
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #media .content{
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:0.5rem;
   }
 }
 @media all and (min-width: 1000px) {
