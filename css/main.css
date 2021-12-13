@@ -81,6 +81,23 @@ header form {
   background-color: white;
 }
 
+.header-col{
+  display: flex;
+  flex-direction: column;
+}
+
+.sort{
+  text-align: center;
+  display: none;
+}
+.sort.show{
+  display: inline;
+}
+
+.sort span{
+  padding-left:1rem;
+}
+
 /*******************content area*******************/
 
 #instructions {
@@ -214,6 +231,9 @@ svg{
 @media all and (min-width: 1000px) {
   header {
     font-size: 2rem;
+  }
+  header p{
+    font-size: 1.5rem;
   }
   #search {
     font-size: 1.5rem;

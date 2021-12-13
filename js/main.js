@@ -62,15 +62,70 @@ const ACTORS = {
     instructions: document.querySelector('#instructions'),
     media: document.querySelector('#media'),
     actors: document.querySelector('#actors'),
+    
+    sortDiv: document.querySelector('.header-col .sort'),
+    sortName:document.querySelector('.sort-name'),
+    sortPopularity:document.querySelector('.sort-popularity'),
 
     addActive(section){
         instructions.classList.remove('active')
         media.classList.remove('active')
         actors.classList.remove('active') 
         section.classList.add('active') 
-
+        
+        ACTORS.sortDiv.classList.remove('show')
+        
         NAV.addHash()
     },
+
+    sort(){
+        /*Add sorting controls*/     
+        ACTORS.sortDiv.classList.add('show')
+
+        ACTORS.sortName.addEventListener('click', ACTORS.sortResults)
+        ACTORS.sortName.classList.add('ascend')
+
+        ACTORS.sortPopularity.addEventListener('click', ACTORS.sortResults)
+        ACTORS.sortPopularity.classList.add('ascend')
+    },
+
+    sortResults(ev){ 
+        /*Sorting*/   
+        let value
+        let sortClass
+        if(ev.target==ACTORS.sortName){
+            value = 'name'
+            sortClass=ACTORS.sortName
+        }
+        else{
+            value='popularity'
+            sortClass=ACTORS.sortPopularity
+        }
+
+        SEARCH.results.sort(function (a,b){
+            let valueA = a[value]
+            let valueB = b[value] 
+            if(value=='name'){
+                valueA.toUpperCase(); 
+                valueB.toUpperCase(); 
+            }
+            
+            if(sortClass.classList.contains('descend')){
+                if(valueA<valueB) return 1
+                if(valueA>valueB) return -1;
+                else return 0;
+            }
+            
+            if(sortClass.classList.contains('ascend')){
+                if(valueA<valueB) return -1
+                if(valueA>valueB) return 1;
+                else return 0;
+            }
+        })
+            sortClass.classList.toggle('ascend')
+            sortClass.classList.toggle('descend')
+            ACTORS.getActors();
+        },
 
     showActors(){
 
@@ -80,6 +135,7 @@ const ACTORS = {
         let actorsHeading = document.querySelector('#actors h2')
         actorsHeading.addEventListener('click', ACTORS.showInstructions)
 
+        ACTORS.sort()
         ACTORS.getActors();
     },
 
@@ -233,7 +289,6 @@ const NAV = {
     history.pushState({}, '', `#`);
     }
     else if(activePage.id==='actors') {
-        console.log('yes')
         history.pushState({}, '', `#${SEARCH.searchValue.toString().toLowerCase()}`); 
     }
     else{
