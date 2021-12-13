@@ -21,10 +21,14 @@ const SEARCH = {
         ev.preventDefault()
     
         /* Fetching actors info based on name typed in search bar */
-        let searchValue = document.getElementById('search').value
-        if(searchValue){                   
+        SEARCH.searchValue = document.getElementById('search').value
+        
+        let searchValueLowerCase=SEARCH.searchValue.toString().toLowerCase()
+        let localResults= JSON.parse(localStorage.getItem(searchValueLowerCase))
+        if(!localResults){ //If not present in local storage 
+            if(SEARCH.searchValue){ //If searchfield wasn't empty              
                 
-                let url= `${APP.baseURL}search/person?query=${searchValue}&api_key=${APP.apiKEY}`
+                let url= `${APP.baseURL}search/person?query=${SEARCH.searchValue}&api_key=${APP.apiKEY}`
                 
                 fetch(url)
                 .then( response=>{
@@ -37,9 +41,15 @@ const SEARCH = {
                 })
                 .then( data=>{
                     SEARCH.results=data.results
+                    STORAGE.addToStorage(SEARCH.searchValue)
                     ACTORS.showActors()
                 })  
                 .catch( (err)=>console.log( 'ERROR:', err.message)) 
+            }
+        }
+        else{
+            SEARCH.results=localResults
+            ACTORS.showActors()
         }
     }
 }
@@ -201,7 +211,10 @@ const MEDIA = {
 
 //storage is for working with localstorage
 const STORAGE = {
-  //this will be used in Assign 4
+    addToStorage(searchValue){
+        let searchKey=searchValue.toString().toLowerCase()
+        localStorage.setItem(searchKey, JSON.stringify(SEARCH.results))
+    }
 }
 
 //nav is for anything connected to the history api and location
