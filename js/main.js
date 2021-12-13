@@ -5,9 +5,11 @@ const APP = {
     baseURL: `https://api.themoviedb.org/3/`,
     apiKEY: `8d4732ba7ba71c8428eb25ce548539f2`,
     imgBaseUrl:`https://image.tmdb.org/t/p/w154/`,
+    hasPopped:false,
     init: () => {
 
         NAV.addHash()
+        window.addEventListener("popstate", SEARCH.searchActor);
 
         /* Calling searchActor function when button is clicked */
         let button=document.querySelector('button')
@@ -18,14 +20,24 @@ const APP = {
 //search is for anything to do with the fetch api
 const SEARCH = {
     results:'',
-    searchValue: document.getElementById('search').value,
-    
+    searchValue: document.getElementById('search').value,    
     searchActor(ev){
+
+        /*Checks if function called on popstate event */
+        if(ev.type=='popstate'){
+            APP.hasPopped=true
+            let hash=location.hash.replace('#','').split('/')[0]
+            if(hash==''){
+            ACTORS.showInstructions()
+            }
+            SEARCH.searchValue=hash
+        }
+        else{
         ev.preventDefault()
-    
         /* Fetching actors info based on name typed in search bar */
         SEARCH.searchValue = document.getElementById('search').value
-        
+        }
+
         let searchValueLowerCase=SEARCH.searchValue.toString().toLowerCase()
         let localResults= JSON.parse(localStorage.getItem(searchValueLowerCase))
         if(!localResults){ //If not present in local storage 
@@ -74,8 +86,13 @@ const ACTORS = {
         section.classList.add('active') 
         
         ACTORS.sortDiv.classList.remove('show')
-        
-        NAV.addHash()
+
+        if(MEDIA.popped) {
+            MEDIA.popped=false
+        }
+        else{
+            NAV.addHash(APP.hasPopped)
+        }  
     },
 
     sort(){
@@ -147,8 +164,8 @@ const ACTORS = {
         /*If no results are returned*/
         if(SEARCH.results.length===0){   
             let p = document.createElement('p')
-                p.textContent="No results found"
-                actorsContent.append(p)
+            p.textContent="No results found"
+            actorsContent.append(p)
         }
 
         SEARCH.results.forEach(result=>{
@@ -199,13 +216,19 @@ const ACTORS = {
 //media is for changes connected to content in the media section
 const MEDIA = {
     actorId:'',
+    popped:false,
 
     showMedia(ev){
 
         window.scroll({top: 0, left: 0, behavior: 'instant'});//scroll to top
 
+        if(!ev){ //If the function was called within code by addHash function
+            MEDIA.actorId=location.hash.replace('#','').split('/')[1]
+            MEDIA.popped=true
+        }
+        else{
         MEDIA.actorId=ev.currentTarget.dataset.id
-
+        }
         /* Removing active class from actors section and adding  to media section */
         ACTORS.addActive(ACTORS.media)
 
@@ -215,7 +238,7 @@ const MEDIA = {
         /* Removing old search results */
         let mediaContent = document.querySelector('#media .content')
         mediaContent.textContent=''
-        
+
         let results=SEARCH.results
         results.forEach(result=>{
             if(result.id==MEDIA.actorId){
@@ -248,6 +271,7 @@ const MEDIA = {
                 divM.dataset.id=id
                 let colour=MEDIA.ratingsColour(vote)
                 divM.lastChild.style.color=colour
+                
                 mediaContent.append(divM)
             })
             }   
@@ -283,18 +307,37 @@ const STORAGE = {
 
 //nav is for anything connected to the history api and location
 const NAV = {
-    addHash(){
-    let activePage=document.querySelector('.active')
-    if(activePage.id==='instructions'){
-    history.pushState({}, '', `#`);
+    addHash(popped){
+        if(popped){
+            let hash=location.hash.replace('#','')
+            document.querySelector('.active').classList.remove('active')
+            let actor=location.hash.split('/')[0]
+            let id=location.hash.split('/')[1]
+            if(!actor){
+                ACTORS.instructions.classList.add('active')
+                
+            }
+            else if(!id){
+                ACTORS.actors.classList.add('active')
+            }
+            else{
+            MEDIA.showMedia()
+            }
+            APP.hasPopped=false
+        }
+        else{
+                let activePage=document.querySelector('.active')
+            if(activePage.id==='instructions'){
+            history.pushState({}, '', `#`);
+            }
+            else if(activePage.id==='actors') {
+                history.pushState({}, '', `#${SEARCH.searchValue.toString().toLowerCase()}`); 
+            }
+            else{
+                history.pushState({},'', `#${SEARCH.searchValue.toString().toLowerCase()}/${MEDIA.actorId}`); 
+            } 
+        }
     }
-    else if(activePage.id==='actors') {
-        history.pushState({}, '', `#${SEARCH.searchValue.toString().toLowerCase()}`); 
-    }
-    else{
-        history.pushState({},'', `#${SEARCH.searchValue.toString().toLowerCase()}/${MEDIA.actorId}`); 
-    } 
-}
 }
 
 //Start everything running
