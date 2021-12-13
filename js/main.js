@@ -6,6 +6,9 @@ const APP = {
     apiKEY: `8d4732ba7ba71c8428eb25ce548539f2`,
     imgBaseUrl:`https://image.tmdb.org/t/p/w154/`,
     init: () => {
+
+        NAV.addHash()
+
         /* Calling searchActor function when button is clicked */
         let button=document.querySelector('button')
         button.addEventListener('click', SEARCH.searchActor) 
@@ -65,6 +68,8 @@ const ACTORS = {
         media.classList.remove('active')
         actors.classList.remove('active') 
         section.classList.add('active') 
+
+        NAV.addHash()
     },
 
     showActors(){
@@ -137,12 +142,17 @@ const ACTORS = {
 
 //media is for changes connected to content in the media section
 const MEDIA = {
+    actorId:'',
+
     showMedia(ev){
 
         window.scroll({top: 0, left: 0, behavior: 'instant'});//scroll to top
 
+        MEDIA.actorId=ev.currentTarget.dataset.id
+
         /* Removing active class from actors section and adding  to media section */
         ACTORS.addActive(ACTORS.media)
+
         let mediaHeading = document.querySelector('#media h2')
         mediaHeading.addEventListener('click', ACTORS.showActors)
 
@@ -150,11 +160,9 @@ const MEDIA = {
         let mediaContent = document.querySelector('#media .content')
         mediaContent.textContent=''
         
-        let id=ev.currentTarget.dataset.id
-        
         let results=SEARCH.results
         results.forEach(result=>{
-            if(result.id==id){
+            if(result.id==MEDIA.actorId){
             let knownFor=result.known_for
             knownFor.forEach(media=>{
                 
@@ -219,7 +227,19 @@ const STORAGE = {
 
 //nav is for anything connected to the history api and location
 const NAV = {
-  //this will be used in Assign 4
+    addHash(){
+    let activePage=document.querySelector('.active')
+    if(activePage.id==='instructions'){
+    history.pushState({}, '', `#`);
+    }
+    else if(activePage.id==='actors') {
+        console.log('yes')
+        history.pushState({}, '', `#${SEARCH.searchValue.toString().toLowerCase()}`); 
+    }
+    else{
+        history.pushState({},'', `#${SEARCH.searchValue.toString().toLowerCase()}/${MEDIA.actorId}`); 
+    } 
+}
 }
 
 //Start everything running
