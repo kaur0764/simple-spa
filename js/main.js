@@ -52,7 +52,7 @@ const SEARCH = {
                         return response.json() 
                     }
                     else{
-                        throw new Error("Wrong HTTP")
+                        throw new Error(`Failed to fetch: ${response.status}, ${response.statusText}`)
                     }
                 })
                 .then( data=>{
@@ -60,7 +60,11 @@ const SEARCH = {
                     STORAGE.addToStorage(SEARCH.searchValue)
                     ACTORS.showActors()
                 })  
-                .catch( (err)=>console.log( 'ERROR:', err.message)) 
+                .catch( (err)=>{
+                    console.log( 'ERROR:', err.message)
+                    let errorMsg=document.querySelector('.error-message')
+                    errorMsg.innerHTML=`<p>${err.message}</p>`//display error message
+                })
             }
         }
         else{

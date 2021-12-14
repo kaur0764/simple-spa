@@ -112,6 +112,10 @@ main{
   position: relative;
 }
 
+.error-message{
+  color:rgb(213, 43, 43);
+}
+
 #instructions ,
 #actors,
 #media {
