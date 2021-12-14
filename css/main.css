@@ -103,17 +103,39 @@ header form {
 #instructions {
   padding: 1rem;
 }
+html,body{
+  max-width: 100%;
+  overflow-x: hidden;
+  height: auto;
+}
+main{
+  position: relative;
+}
 
 #instructions ,
 #actors,
 #media {
-  display: none;
+  position: absolute;
+  top:0;
+  left:100%;
+  transform: scaleX(0.5);
+  transition: left 0.5s,
+  transform 0.5s;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 #instructions.active,
 #actors.active,
 #media.active {
-  display: block;
+  left:0;
+  transform: scaleX(1);
+  max-height:none;
+  overflow:auto;
+}
+
+#media.active {
+  position:static;
 }
 
 #instructions h2,
