@@ -42,7 +42,8 @@ const SEARCH = {
         let localResults= JSON.parse(localStorage.getItem(searchValueLowerCase))
         if(!localResults){ //If not present in local storage 
             if(SEARCH.searchValue){ //If searchfield wasn't empty              
-                
+                SEARCH.overlay();
+
                 let url= `${APP.baseURL}search/person?query=${SEARCH.searchValue}&api_key=${APP.apiKEY}`
                 
                 fetch(url)
@@ -65,6 +66,27 @@ const SEARCH = {
         else{
             SEARCH.results=localResults
             ACTORS.showActors()
+        }
+    },
+    /* Handling loading animation overlay */
+    overlay(){
+        let overlayDiv= document.querySelector('.overlay')
+        let spinner= document.querySelector('.spinner')
+        overlayDiv.classList.add('display')
+        let times=0 //No. of frames
+        let deg=0
+        window.requestAnimationFrame(loadingAnimation)
+        
+        function loadingAnimation(){
+            times++
+            deg=deg+5
+            spinner.style.transform=`rotate(${deg}deg)`
+            if(times<=213){ //spinner completes full rotation three times
+                requestAnimationFrame(loadingAnimation)
+            }
+            else{
+                overlayDiv.classList.remove('display')
+            }
         }
     }
 }
